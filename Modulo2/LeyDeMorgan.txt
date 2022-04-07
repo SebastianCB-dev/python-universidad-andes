@@ -1,0 +1,6 @@
+not (p and q) or p
+
+(not p or not q) or p
+not q or (not p or p)
+not q or True
+True
