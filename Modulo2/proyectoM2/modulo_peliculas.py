@@ -115,9 +115,9 @@ def duracion_promedio_peliculas(p1: dict, p2: dict, p3: dict, p4: dict, p5: dict
         horas = promedio // 60
         minutos = promedio - (horas * 60)
         if horas < 10:
-            horas = '0' + horas
+            horas = '0' + str(horas)
         if minutos < 10:
-            minutos = '0' + minutos
+            minutos = '0' + str(minutos)
         result = f"{horas}:{minutos}"
     return f"La duración promedio de las peliculas es: {result}"
 
@@ -199,9 +199,26 @@ def reagendar_pelicula(peli:dict, nueva_hora: int, nuevo_dia: str,
     Retorna:
         bool: True en caso de que se haya podido reagendar la pelicula, False de lo contrario.
     """
-    result = False
-    if ( nueva_hora >= p1['hora'] and nueva_hora <= p1['hora'] + p1['duracion'] and nuevo_dia == p1['dia']) or (nueva_hora >= p2['hora'])
+    result = True
+    pelicula_generos = peli['genero'].split(',')
+    if se_cruza(nueva_hora, p1, nuevo_dia) or se_cruza(nueva_hora, p2, nuevo_dia) or se_cruza(nueva_hora, p3, nuevo_dia) or se_cruza(nueva_hora, p4, nuevo_dia) or se_cruza(nueva_hora, p5, nuevo_dia):
+        result = False
+    elif control_horario:
+        if 'Documental' in pelicula_generos and nueva_hora >= 2200:
+            result = False
+        elif 'Drama' in pelicula_generos and nuevo_dia == 'Viernes':
+            result = False
+        elif (nuevo_dia == 'lunes' or nuevo_dia == 'martes' or nuevo_dia == 'miércoles' or nuevo_dia == 'jueves' or nuevo_dia == 'viernes') and (nueva_hora >= 2300 and nueva_hora <= 600):
+            result = False
+        else:
+            result = True
+    else:
+        result = True
+
     return result
+
+def se_cruza(nueva_hora: int, pelicula: dict, nuevo_dia: str) -> bool: 
+    return  nueva_hora >= pelicula['hora'] and (nueva_hora <= pelicula['hora'] + pelicula['duracion']) and nuevo_dia == pelicula['dia']
 
 def decidir_invitar(peli: dict, edad_invitado: int, autorizacion_padres: bool)->bool:
     """Verifica si es posible invitar a la persona cuya edad entra por parametro a ver la
@@ -215,8 +232,31 @@ def decidir_invitar(peli: dict, edad_invitado: int, autorizacion_padres: bool)->
     Retorna:
         bool: True en caso de que se pueda invitar a la persona, False de lo contrario.
     """
+    result = False
+    generos_pelicula = peli['genero'].split(',')
+    if edad_invitado >= 18:
+        result = True
+    else:
+        vc = validar_clasificacion(edad_invitado, peli)
+        if (edad_invitado < 15 and ('Terror' in generos_pelicula)) or (edad_invitado <= 10 and (len(generos_pelicula) > 1)or (not 'Familiar' in generos_pelicula)) or not vc:
+            if autorizacion_padres: 
+                result = False
+            else: 
+                result = True 
+    return result
+
+def validar_clasificacion(edad, peli) -> bool:
     result = True
-    
+    clasificacion = peli['clasificacion']
+    if clasificacion == 'todos':
+        result = True
+    else: 
+        clasificacion = clasificacion[:-1]
+
+        if edad <= int(clasificacion):
+            result = False
+        else: 
+            result = True
     return result
 
 
