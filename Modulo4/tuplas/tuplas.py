@@ -10,7 +10,7 @@ lista.append(-1)
 
 tupla = (1,2,3,4,5,6,7,8)
 type(tupla) #tuple
-# tupla[1] --> ERROR 
+# tupla[1] = 1 --> ERROR 
 
 # ? Es posible crear la tupla sin especificar los parentesis
 tupla2 = 1,2,3
@@ -25,8 +25,10 @@ len(tupla_filatrada)
 
 ##! Empaquetado y desempaquetado
 
-tupla_ejemplo = ("Sebastian", "Carrillo", 21)
+#Empaquetado
+tupla_ejemplo = "Sebastian", "Carrillo", 21
 
+#Desempaquetado
 nombre, apellido, edad = tupla_ejemplo
 
 print(nombre, apellido, edad)
