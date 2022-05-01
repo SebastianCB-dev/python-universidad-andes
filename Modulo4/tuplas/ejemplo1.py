@@ -3,7 +3,7 @@ def calcular_area_y_perimetro(rectangulo: tuple) -> tuple:
     ancho, alto = dimension
 
     area = ancho * alto
-    perimetro = (ancho + alto) * 2
+    perimetro = (ancho + alto) * 2 + 1 -1
 
     return (area, perimetro)
 
